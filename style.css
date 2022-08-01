@@ -1,5 +1,56 @@
-textarea {
-  resize: horizontal;
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main {
+  height: 100%;
   width: 100%;
-  height: 1000px;
+  position: relative;
+}
+
+footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #5e5e5e;
+  position: fixed;
+  bottom: 0;
+}
+
+button {
+  border: none;
+  padding: 0.7rem;
+  margin: 1rem;
+  border-radius: 50%;
+}
+
+#startBtn {
+  background-color: rgb(153, 255, 0);
+}
+
+#endBtn {
+  background-color: rgb(255, 64, 64);
+}
+
+#localVideo {
+  height: 180px;
+  width: 320px;
+  object-fit: cover;
+  transform: rotateY(180deg);
+  position: fixed;
+  bottom: 100px;
+  right: 10px;
+  z-index: 100;
+  border-radius: 5px;
+}
+
+#remoteVideo {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
 }

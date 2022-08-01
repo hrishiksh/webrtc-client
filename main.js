@@ -1,10 +1,7 @@
 const localVideo = document.getElementById("localVideo");
 const remoteVideo = document.getElementById("remoteVideo");
-
-const inputText = document.getElementById("inputText");
-const submit = document.getElementById("submit");
-const startButton = document.getElementById("start");
-const errorText = document.getElementById("errortext");
+const startBtn = document.getElementById("startBtn");
+const endBtn = document.getElementById("endBtn");
 
 import { io } from "socket.io-client";
 
@@ -12,37 +9,28 @@ const socket = io("wss://codemagic-webrtc-server.herokuapp.com");
 // const socket = io("ws://localhost:8000");
 
 socket.on("hello", (message) => {
-  errorText.value = message;
   console.log(message);
-});
-
-socket.on("msg", (message) => {
-  errorText.value = message;
 });
 
 const configuration = {
   iceServers: [
     {
-      urls: [
-        "stun:stun.l.google.com:19302",
-        "stun:stun2.l.google.com:19302",
-        "stun:stun3.l.google.com:19302",
-        "stun:stun4.l.google.com:19302",
-      ],
+      urls: ["stun:stun.l.google.com:19302", "stun:stun2.l.google.com:19302"],
     },
   ],
 };
 const peerconnection = new RTCPeerConnection(configuration);
+let rtcSender;
 
 navigator.mediaDevices
   .getUserMedia({
     video: true,
-    audio: false,
+    audio: true,
   })
   .then((localstream) => {
     localVideo.srcObject = localstream;
     localstream.getTracks().forEach((track) => {
-      peerconnection.addTrack(track, localstream);
+      rtcSender = peerconnection.addTrack(track, localstream);
     });
   });
 
@@ -50,11 +38,6 @@ peerconnection.addEventListener("track", async (e) => {
   const [remoteStream] = e.streams;
   remoteVideo.srcObject = remoteStream;
 });
-
-submit.onclick = () => {
-  console.log(peerconnection.connectionState);
-  // socket.emit("msg", inputText.value);
-};
 
 socket.on("answer", async (message) => {
   console.log("ANS-REMOTE-DESC: ", message);
@@ -73,10 +56,32 @@ socket.on("offer", async (message) => {
 
 peerconnection.addEventListener("icecandidate", (e) => {
   if (e.candidate) {
-    console.log("ICE: ", e.candidate);
     socket.emit("ice", e.candidate);
   }
 });
+
+socket.on("ice", async (message) => {
+  try {
+    await peerconnection.addIceCandidate(message);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+async function makeCall() {
+  const offer = await peerconnection.createOffer();
+  await peerconnection.setLocalDescription(offer);
+  socket.emit("offer", offer);
+}
+
+function endCall() {
+  peerconnection.removeTrack(rtcSender);
+  peerconnection.close();
+  remoteVideo.srcObject = null;
+}
+
+startBtn.onclick = () => makeCall();
+endBtn.onclick = () => endCall();
 
 peerconnection.addEventListener("connectionstatechange", (e) => {
   switch (peerconnection.connectionState) {
@@ -89,6 +94,7 @@ peerconnection.addEventListener("connectionstatechange", (e) => {
       break;
     case "disconnected":
       console.log("Disconnecting…");
+      remoteVideo.srcObject = null;
       break;
     case "closed":
       console.log("Offline");
@@ -115,20 +121,3 @@ peerconnection.addEventListener("icegatheringstatechange", (e) => {
       break;
   }
 });
-
-socket.on("ice", async (message) => {
-  console.log("ICE: ", message);
-  try {
-    await peerconnection.addIceCandidate(message);
-  } catch (error) {
-    console.log(error);
-  }
-});
-
-async function makeCall() {
-  const offer = await peerconnection.createOffer();
-  await peerconnection.setLocalDescription(offer);
-  socket.emit("offer", offer);
-}
-
-startButton.onclick = () => makeCall();
