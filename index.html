@@ -4,16 +4,55 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/webrtc-client/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
     <title>WebRtc client</title>
-    <script type="module" crossorigin src="/webrtc-client/assets/index.584e4986.js"></script>
+    <script type="module" crossorigin src="/webrtc-client/assets/index.733d5923.js"></script>
+    <link rel="stylesheet" href="/webrtc-client/assets/index.52eeef63.css">
   </head>
   <body>
-    <video id="localVideo" autoplay></video>
-    <video id="remoteVideo" autoplay></video>
-    <button id="start">start</button>
-    <input type="text" id="inputText" />
-    <button id="submit">Submit</button>
-    <textarea id="errortext">hi</textarea>
+    <main>
+      <video id="remoteVideo" autoplay></video>
+      <video id="localVideo" autoplay muted></video>
+    </main>
+    <footer>
+      <button id="startBtn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+          stroke-width="1"
+          stroke="#ffffff"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path
+            d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2"
+          />
+        </svg>
+      </button>
+      <button id="endBtn">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+          stroke-width="1"
+          stroke="#ffffff"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <line x1="3" y1="21" x2="21" y2="3" />
+          <path
+            d="M5.831 14.161a15.946 15.946 0 0 1 -2.831 -8.161a2 2 0 0 1 2 -2h4l2 5l-2.5 1.5c.108 .22 .223 .435 .345 .645m1.751 2.277c.843 .84 1.822 1.544 2.904 2.078l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a15.963 15.963 0 0 1 -10.344 -4.657"
+          />
+        </svg>
+      </button>
+    </footer>
     <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
     
   </body>
